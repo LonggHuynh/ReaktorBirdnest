@@ -6,7 +6,6 @@ import DroneInfoCard from './components/DroneInfoCard'
 function App() {
 
   const [drones, setDrones] = useState([])
-
   useEffect(() => {
     const interval = setInterval(() => {
       fetch(url('/violatingDrones'))
