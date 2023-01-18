@@ -74,13 +74,12 @@ const handleUpdate = async () => {
   ).then((res) => res.text())
     .then(data => xml2js.xml2js(data, { compact: true }))
     .then(data => getViolatingDrones(data))
-    .catch((error) => {
-      console.error('Error:', error)
-    })
+    .catch(err => console.error('Error:', err))
 
 
 
 
+  //May consider removing the await and Promise.all as cleanUp can be done periodly?
   await Promise.all(
     notAppearedDrones.map((drone) => {
 

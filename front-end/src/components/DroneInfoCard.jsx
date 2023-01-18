@@ -7,8 +7,8 @@ const DroneInfoCard = ({ drone }) => {
       <h1> {`${firstName} ${lastName}`}</h1>
       <p> Email: {email}</p>
       <p> Phone number: {phoneNumber}</p>
-      <p> Serial number : {serialNr}</p>
-      <p> Closest distance: {distance.toFixed(2)}</p>
+      <p> Drone serial number : {serialNr}</p>
+      <p> Closest distance: {distance.toFixed(1)} m</p>
       <p> Last seen: {new Date(violationAt).toLocaleString()}</p>
     </div>
   )
