@@ -100,7 +100,7 @@ const handleUpdate = async () => {
 setInterval(handleUpdate, 2000)
 
 app.get('/api/violatingDrones', (req, res) => {
-  const drones = [...droneMap.values()].map(drone => ({ ...drone.pilot, violationAt: drone.capturedAt, distance: drone.distance }))
+  const drones = [...droneMap.values()].map(drone => ({ ...drone.pilot, violationAt: drone.capturedAt, distance: drone.distance, serialNr: drone.serialNr }))
   res.json({ data: drones })
 })
 
