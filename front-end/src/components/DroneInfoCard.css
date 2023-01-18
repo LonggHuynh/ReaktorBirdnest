@@ -1,0 +1,7 @@
+.droneCard {
+    flex-basis: 400px;
+    border-radius: 0.4rem;
+    border: 2.5px solid gray;
+    padding: 20px 30px;
+    box-shadow: light-shadow;
+}

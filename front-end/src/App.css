@@ -1,0 +1,18 @@
+.App {
+  padding: 40px 100px;
+
+}
+
+.title{
+  text-align: center;
+  font-weight: 400;
+  font-size: 3.5rem;
+}
+
+.droneContainer {
+  margin-top: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 40px;
+  column-gap: 80px;
+}
