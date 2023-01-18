@@ -24,7 +24,7 @@ const distance = (drone) => {
 }
 
 
-// the key-value is (serialNr : {... pilotInfo, timeStamp, distance})
+// the key-value is (serialNr : {... pilot:{... pilotInfo}, timeStamp, distance})
 var droneMap = new Map()
 
 const getViolatingDrones = (data) => {
@@ -38,6 +38,7 @@ const getViolatingDrones = (data) => {
     const serialNr = drone.serialNumber._text
 
     if (droneDistance > 100) {
+      //Ignore the drone out of NDZ
       return
     }
 
@@ -55,7 +56,7 @@ const getViolatingDrones = (data) => {
   })
 
 
-  //Ones not seen last 10 minutes.
+  //Only ones not seen last 10 minutes.
   return notAppearedDrones
 }
 
@@ -79,12 +80,19 @@ const handleUpdate = async () => {
 
 
 
-  //May consider removing the await and Promise.all as cleanUp can be done periodly?
   await Promise.all(
     notAppearedDrones.map((drone) => {
 
       fetch(`https://assignments.reaktor.com/birdnest/pilots/${drone.serialNr}`)
         .then(response => response.json())
+        .then(async (response) => {
+          const data = await response.json()
+          if (!response.ok) {
+            throw new Error(`Pilot with the drone ${drone.serialNr} not found`)
+          }
+          return data
+
+        })
         .then((pilot) => {
           droneMap.set(drone.serialNr, { ...drone, pilot: pilot })
         })

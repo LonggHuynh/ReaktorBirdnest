@@ -1,6 +1,6 @@
 # Description
 
-Reaktor pre-assignment 2023.
+A solution to Reaktor pre-assignment 2023.
 
 
 # Run locally
