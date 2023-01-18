@@ -87,10 +87,11 @@ const handleUpdate = async () => {
 
       fetch(`https://assignments.reaktor.com/birdnest/pilots/${drone.serialNr}`)
         .then(async (response) => {
+          const data = await response.json()
           if (!response.ok) {
             throw new Error(`Pilot with the drone ${drone.serialNr} not found`)
           }
-          return await response.json()
+          return data
         })
         .then((pilot) => {
           droneMap.set(drone.serialNr, { ...drone, pilot: pilot })
