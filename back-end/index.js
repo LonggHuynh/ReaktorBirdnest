@@ -45,9 +45,9 @@ const getViolatingDrones = (data) => {
 
 
     if (droneMap.has(serialNr)) {
-      let previousDrone = droneMap.get(serialNr)
-      previousDrone.distance = Math.min(droneDistance, previousDrone.distance)
-      droneMap.set(serialNr, { ...previousDrone, serialNr, capturedAt: timeStamp })
+      let updatedDrone = droneMap.get(serialNr)
+      updatedDrone.distance = Math.min(droneDistance, updatedDrone.distance)
+      droneMap.set(serialNr, { ...updatedDrone, serialNr, capturedAt: timeStamp })
 
     } else {
       notAppearedDrones.push({ serialNr, capturedAt: timeStamp, distance: droneDistance })
@@ -56,7 +56,7 @@ const getViolatingDrones = (data) => {
   })
 
 
-  //Only ones not seen last 10 minutes.
+  //Only ones not seen in the last 10 minutes.
   return notAppearedDrones
 }
 
@@ -84,7 +84,6 @@ const handleUpdate = async () => {
     notAppearedDrones.map((drone) => {
 
       fetch(`https://assignments.reaktor.com/birdnest/pilots/${drone.serialNr}`)
-        .then(response => response.json())
         .then(async (response) => {
           const data = await response.json()
           if (!response.ok) {
