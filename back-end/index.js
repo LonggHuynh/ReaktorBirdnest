@@ -30,6 +30,8 @@ const distance = (drone) => {
   return Math.sqrt(xDiff * xDiff + yDiff * yDiff)
 }
 
+
+//This function update the drones that are already in the droneMap and return the ones that are not to make the pilot api calls for these drones.  
 const getViolatingDrones = (data) => {
 
 
@@ -37,13 +39,13 @@ const getViolatingDrones = (data) => {
 
   //Drones from the data API call not seen in the last 10 minutes. 
   const notAppearedDrones = []
-  
+
   data.report.capture.drone.forEach(drone => {
     const droneDistance = distance(drone)
     const serialNr = drone.serialNumber._text
 
     if (droneDistance > 100) {
-      //Ignore the drone out of NDZ
+      //Ignore the drone not in NDZ
       return
     }
 
@@ -62,7 +64,7 @@ const getViolatingDrones = (data) => {
   return notAppearedDrones
 }
 
-//Clear drones that not seen for more than 10 minutes
+//Clear drones not seen for more than 10 minutes
 const cleanUp = () => {
   droneMap.forEach((drone, serialNr) => {
     if (new Date() - drone.capturedAt > 600000)
@@ -85,12 +87,10 @@ const handleUpdate = async () => {
 
       fetch(`https://assignments.reaktor.com/birdnest/pilots/${drone.serialNr}`)
         .then(async (response) => {
-          const data = await response.json()
           if (!response.ok) {
             throw new Error(`Pilot with the drone ${drone.serialNr} not found`)
           }
-          return data
-
+          return await response.json()
         })
         .then((pilot) => {
           droneMap.set(drone.serialNr, { ...drone, pilot: pilot })
