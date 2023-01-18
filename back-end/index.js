@@ -17,22 +17,27 @@ app.use(cors({
 
 
 
+
+
+
+// the key-value is (serialNr : {... pilot:{... pilotInfo}, timeStamp, distance})
+var droneMap = new Map()
+
+//Distance fromt the center
 const distance = (drone) => {
   const xDiff = Number(drone.positionX._text) / 1000 - 250
   const yDiff = Number(drone.positionY._text) / 1000 - 250
   return Math.sqrt(xDiff * xDiff + yDiff * yDiff)
 }
 
-
-// the key-value is (serialNr : {... pilot:{... pilotInfo}, timeStamp, distance})
-var droneMap = new Map()
-
 const getViolatingDrones = (data) => {
 
 
   const timeStamp = new Date(data.report.capture._attributes.snapshotTimestamp)
 
+  //Drones from the data API call not seen in the last 10 minutes. 
   const notAppearedDrones = []
+  
   data.report.capture.drone.forEach(drone => {
     const droneDistance = distance(drone)
     const serialNr = drone.serialNumber._text
@@ -42,10 +47,9 @@ const getViolatingDrones = (data) => {
       return
     }
 
-
-
     if (droneMap.has(serialNr)) {
       let updatedDrone = droneMap.get(serialNr)
+      //Update the closest distance.
       updatedDrone.distance = Math.min(droneDistance, updatedDrone.distance)
       droneMap.set(serialNr, { ...updatedDrone, serialNr, capturedAt: timeStamp })
 
@@ -55,12 +59,10 @@ const getViolatingDrones = (data) => {
     }
   })
 
-
-  //Only ones not seen in the last 10 minutes.
   return notAppearedDrones
 }
 
-
+//Clear drones that not seen for more than 10 minutes
 const cleanUp = () => {
   droneMap.forEach((drone, serialNr) => {
     if (new Date() - drone.capturedAt > 600000)
@@ -76,8 +78,6 @@ const handleUpdate = async () => {
     .then(data => xml2js.xml2js(data, { compact: true }))
     .then(data => getViolatingDrones(data))
     .catch(err => console.error('Error:', err))
-
-
 
 
   await Promise.all(
